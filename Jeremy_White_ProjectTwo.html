@@ -1,0 +1,1293 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head></head><body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<main>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>Treasure Hunt Game Notebook<a rel="noopener" class="anchor-link" href="#Treasure-Hunt-Game-Notebook">&#182;</a></h1><h2>Read and Review Your Starter Code<a rel="noopener" class="anchor-link" href="#Read-and-Review-Your-Starter-Code">&#182;</a></h2><p>The theme of this project is a popular treasure hunt game in which the player needs to find the treasure before the pirate does. While you will not be developing the entire game, you will write the part of the game that represents the intelligent agent, which is a pirate in this case. The pirate will try to find the optimal path to the treasure using deep Q-learning.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-success" style="color:black;">
+<b>To Begin:</b> Use this <b>TreasureHuntGame_starterCode.ipynb</b> file to complete your assignment. 
+<br/><br/>
+You have been provided with two Python classes and this notebook to help you with this assignment. The first class, <b>TreasureMaze.py</b>, represents the environment, which includes a maze object defined as a matrix. The second class, <b>GameExperience.py</b>, stores the episodes – that is, all the states that come in between the initial state and the terminal state. This is later used by the agent for learning by experience, called &quot;exploration&quot;. This notebook shows how to play a game. Your task is to complete the deep Q-learning implementation in the qtrain() function for which a skeleton implementation has been provided. 
+</div>
+<br/>
+<div class="alert alert-block alert-info" style="color:black;">
+<b>NOTE: </b>The code block you will need to complete will have <b>#TODO</b> as a header.
+<br/> First, read and review the next few code and instruction blocks to understand the code that you have been given.</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-warning" style="color: #333333;">
+<b>Installations</b> The following command will install the necessary Python libraries to necessary to run this application. If you see a &quot;[notice] A new release of pip is available: 23.1.2 -&gt; 25.2&quot; at the end of the installation, you may disregard that statement. 
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[1]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>Requirement already satisfied: numpy==1.26.4 in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from -r requirements.txt (line 1)) (1.26.4)
+Requirement already satisfied: keras in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from -r requirements.txt (line 2)) (3.4.1)
+Requirement already satisfied: absl-py in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (2.1.0)
+Requirement already satisfied: rich in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (13.7.1)
+Requirement already satisfied: namex in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (0.0.8)
+Requirement already satisfied: h5py in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (3.11.0)
+Requirement already satisfied: optree in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (0.12.1)
+Requirement already satisfied: ml-dtypes in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (0.4.0)
+Requirement already satisfied: packaging in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (24.1)
+Requirement already satisfied: typing-extensions&gt;=4.5.0 in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from optree-&gt;keras-&gt;-r requirements.txt (line 2)) (4.12.2)
+Requirement already satisfied: markdown-it-py&gt;=2.2.0 in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from rich-&gt;keras-&gt;-r requirements.txt (line 2)) (3.0.0)
+Requirement already satisfied: pygments&lt;3.0.0,&gt;=2.13.0 in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from rich-&gt;keras-&gt;-r requirements.txt (line 2)) (2.18.0)
+Requirement already satisfied: mdurl~=0.1 in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from markdown-it-py&gt;=2.2.0-&gt;rich-&gt;keras-&gt;-r requirements.txt (line 2)) (0.1.2)
+
+<span class="ansi-bold">[</span><span class="ansi-blue-fg">notice</span><span class="ansi-bold">]</span> A new release of pip is available: <span class="ansi-red-fg">24.1.2</span> -&gt; <span class="ansi-green-fg">26.1.2</span>
+<span class="ansi-bold">[</span><span class="ansi-blue-fg">notice</span><span class="ansi-bold">]</span> To update, run: <span class="ansi-green-fg">pip install --upgrade pip</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Tensorflow CPU Acceleration Warning</h2>
+<div class="alert alert-block alert-danger" style="color: #333333;">
+<b>GPU/CUDA/Memory Warnings/Errors:</b> You may receive some errors referencing that GPUs will not be used, CUDA could not be found, or free system memory allocation errors. These and a few others, are standard errors that can be ignored here as they are environment based.<br/><br/>
+<b>Example messages:</b>
+<ul>
+<li>oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders</li>
+<li>WARNING: All log messages before absl::InitializeLog() is called are written to STDERR</li>
+</ul></div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[3]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">datetime</span><span class="o">,</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.models</span> <span class="kn">import</span> <span class="n">clone_model</span>
+<span class="kn">from</span> <span class="nn">keras.models</span> <span class="kn">import</span> <span class="n">Sequential</span>
+<span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Activation</span><span class="p">,</span> <span class="n">PReLU</span>
+<span class="kn">from</span> <span class="nn">keras.optimizers</span> <span class="kn">import</span> <span class="n">SGD</span> <span class="p">,</span> <span class="n">Adam</span><span class="p">,</span> <span class="n">RMSprop</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">TreasureMaze</span> <span class="kn">import</span> <span class="n">TreasureMaze</span>
+<span class="kn">from</span> <span class="nn">GameExperience</span> <span class="kn">import</span> <span class="n">GameExperience</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2> Maze Object Generation</h2>
+<div class="alert alert-block alert-info" style="color:black;">
+<b>NOTE:</b>  The following code block contains an 8x8 matrix that will be used as a maze object:
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[4]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">maze</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">]</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Helper Functions and Global Variables</h2>
+<div class="alert alert-block alert-info" style="color:black;">
+This <b>show()</b> helper function allows a visual representation of the maze object:
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[5]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">qmaze</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="s1">&#39;on&#39;</span><span class="p">)</span>
+    <span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">maze</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">nrows</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">ncols</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([])</span>
+    <span class="n">canvas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">qmaze</span><span class="o">.</span><span class="n">maze</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span><span class="p">,</span><span class="n">col</span> <span class="ow">in</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">visited</span><span class="p">:</span>
+        <span class="n">canvas</span><span class="p">[</span><span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span>
+    <span class="n">pirate_row</span><span class="p">,</span> <span class="n">pirate_col</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">state</span>
+    <span class="n">canvas</span><span class="p">[</span><span class="n">pirate_row</span><span class="p">,</span> <span class="n">pirate_col</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.3</span>   <span class="c1"># pirate cell</span>
+    <span class="n">canvas</span><span class="p">[</span><span class="n">nrows</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ncols</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.9</span> <span class="c1"># treasure cell</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">img</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>The <b>pirate agent</b> can move in four directions: left, right, up, and down.</p>
+<div class="alert alert-block alert-warning" style="color:black;">
+<b>Note:</b> While the agent primarily learns by experience through exploitation, often, the agent can choose to explore the environment to find previously undiscovered paths. This is called &quot;exploration&quot; and is defined by epsilon. This value is the <b>EXPLORATION</b> values from the Cartpole assignment. The hyperparameters are provided here and used in the <b>qtrain()</b> method. 
+You are encouraged to try various values for the exploration factor and see how the algorithm performs.
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[6]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">LEFT</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">UP</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">RIGHT</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">DOWN</span> <span class="o">=</span> <span class="mi">3</span>
+
+
+<span class="c1"># Exploration factor</span>
+<span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">epsilon_min</span> <span class="o">=</span> <span class="mf">0.05</span>
+<span class="n">epsilon_decay</span> <span class="o">=</span> <span class="mf">0.995</span>
+<span class="n">patience</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="c1"># Actions dictionary</span>
+<span class="n">actions_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">LEFT</span><span class="p">:</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+    <span class="n">UP</span><span class="p">:</span> <span class="s1">&#39;up&#39;</span><span class="p">,</span>
+    <span class="n">RIGHT</span><span class="p">:</span> <span class="s1">&#39;right&#39;</span><span class="p">,</span>
+    <span class="n">DOWN</span><span class="p">:</span> <span class="s1">&#39;down&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">num_actions</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">actions_dict</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>The sample code block and output below show creating a maze object and performing one action (DOWN), which returns the reward. The resulting updated environment is visualized.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[7]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">qmaze</span> <span class="o">=</span> <span class="n">TreasureMaze</span><span class="p">(</span><span class="n">maze</span><span class="p">)</span>
+<span class="n">canvas</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">game_over</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">act</span><span class="p">(</span><span class="n">DOWN</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;reward=&quot;</span><span class="p">,</span> <span class="n">reward</span><span class="p">)</span>
+<span class="n">show</span><span class="p">(</span><span class="n">qmaze</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>reward= -0.04
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[7]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>&lt;matplotlib.image.AxesImage at 0x7bfafcc4efd0&gt;</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img alt="No description has been provided for this image" src="javascript://"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-warning" style="color:black;">
+<b>NOTE:</b> This <b>play_game()</b> function simulates a full game based on the provided trained model. The other parameters include the TreasureMaze object, the starting position of the pirate and max amount of steps to make sure the code does not get stuck in a loop.
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[8]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">play_game</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">qmaze</span><span class="p">,</span> <span class="n">pirate_cell</span><span class="p">,</span> <span class="n">max_steps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">qmaze</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">pirate_cell</span><span class="p">)</span>
+    <span class="n">envstate</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">observe</span><span class="p">()</span>
+    <span class="n">steps</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">max_steps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">max_steps</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">maze</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="mi">4</span>  <span class="c1"># safety cutoff</span>
+
+    <span class="k">while</span> <span class="n">steps</span> <span class="o">&lt;</span> <span class="n">max_steps</span><span class="p">:</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">envstate</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">q_values</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">q_values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">envstate</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">game_status</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">act</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+        <span class="n">steps</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">game_status</span> <span class="o">==</span> <span class="s1">&#39;win&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">game_status</span> <span class="o">==</span> <span class="s1">&#39;lose&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># timed out with no result</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-warning" style="color:black;">
+<b>Note: </b>
+    This <b>completion_check()</b> function helps you to determine whether the pirate can win any game at all. If your maze is not well designed, the pirate may not win any game at all. In this case, your training would not yield any result. The provided maze in this notebook ensures that there is a path to win and you can run this method to check.
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[9]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">completion_check</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">maze_or_qmaze</span><span class="p">,</span> <span class="n">max_steps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># Accept either raw numpy maze or TreasureMaze instance</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maze_or_qmaze</span><span class="p">,</span> <span class="n">TreasureMaze</span><span class="p">):</span>
+        <span class="n">qmaze</span> <span class="o">=</span> <span class="n">maze_or_qmaze</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">qmaze</span> <span class="o">=</span> <span class="n">TreasureMaze</span><span class="p">(</span><span class="n">maze_or_qmaze</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">free_cells</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">valid_actions</span><span class="p">(</span><span class="n">cell</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">play_game</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">qmaze</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">max_steps</span><span class="o">=</span><span class="n">max_steps</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-warning" style="color:black;">
+<b>Note: </b>
+The <b>build_model()</b> function in the block below will build the neural network model. Review the code and note the number of layers, as well as the activation, optimizer, and loss functions that are used to train the model.
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[10]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">build_model</span><span class="p">(</span><span class="n">maze</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">maze</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="n">maze</span><span class="o">.</span><span class="n">size</span><span class="p">,)))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">PReLU</span><span class="p">())</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">maze</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">PReLU</span><span class="p">())</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">num_actions</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;mse&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-warning" style="color:black;">
+<b>Note:</b>
+    This <b>train_step()</b> helper function in the block below is used to help predict Q-values (quality values) in the current modelto see how good each action is in a given state and improve the Q-network by reducing the gap between what is predicted and what should have been predicted. 
+</div>
+<br/>
+<div class="alert alert-block alert-info" style="color:black;">
+If you&#39;re interested in reading up on the <i>@tf.function</i>, which is a decorator for Tensorflow to run this code into a TensorFlow computation graph, please refer to this link: <a rel="noopener" href="https://www.tensorflow.org/guide/intro_to_graphs">https://www.tensorflow.org/guide/intro_to_graphs</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Tensorflow GPU Warning</h2>
+<div class="alert alert-block alert-danger" style="color: #333333;">
+    You will see a <b>warning in red</b> &quot;INTERNAL: CUDA Runtime error: Failed call to cudaGetRuntimeVersion: Error loading CUDA libraries. GPU will not be used.&quot;. This is simply coming from <b>Tensorflow skipping using GPU for this assignment.</b>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[11]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">loss_fn</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">MeanSquaredError</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">()</span>
+
+<span class="nd">@tf</span><span class="o">.</span><span class="n">function</span>
+<span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>
+        <span class="n">q_values</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">q_values</span><span class="p">)</span>
+    <span class="n">grads</span> <span class="o">=</span> <span class="n">tape</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">trainable_variables</span><span class="p">)</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">trainable_variables</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">loss</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1786145479.904955     359 cuda_executor.cc:1015] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+I0000 00:00:1786145479.962421     359 cuda_executor.cc:1015] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+I0000 00:00:1786145479.964150     359 cuda_executor.cc:1015] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+I0000 00:00:1786145479.967049     359 cuda_executor.cc:1015] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+I0000 00:00:1786145479.968627     359 cuda_executor.cc:1015] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+I0000 00:00:1786145479.970174     359 cuda_executor.cc:1015] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+I0000 00:00:1786145480.204258     359 cuda_executor.cc:1015] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+I0000 00:00:1786145480.205946     359 cuda_executor.cc:1015] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+I0000 00:00:1786145480.207426     359 cuda_executor.cc:1015] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>#TODO: Complete the Q-Training Algorithm Code Block<a rel="noopener" class="anchor-link" href="#%23TODO:-Complete-the-Q-Training-Algorithm-Code-Block">&#182;</a></h1><div class="alert alert-block alert-info" style="color:black;">
+    This is your deep Q-learning implementation. The goal of your deep Q-learning implementation is to find the best possible navigation sequence that results in reaching the treasure cell while maximizing the reward. In your implementation, you need to determine the optimal number of epochs to achieve a 100% win rate.
+</div>
+<b>Pseudocode:</b>
+<br/>
+    For each epoch:
+        Reset the environment at a random starting cell
+        agent_cell = randomly select a free cell
+        <br/>
+<b>Hint:</b> Review the reset method in the TreasureMaze.py class.
+
+<pre><code>    Set the initial environment state
+    env_state should reference the environment&#39;s current state
+    Hint: Review the observe method in the TreasureMaze.py class.
+
+    While game status is not game over:
+       previous_envstate = env_state
+        Decide on an action:
+            - If possible, take a random valid exploration action and 
+              randomly choose action (left, right, up, down)
+              and assign it to an action variable
+            - Else, pick the best exploitation action from the model and assign it to an action variable
+              Hint: Review the predict method in the GameExperience.py class.
+
+       Retrieve the values below from the act() method.
+       env_state, reward, game_status = qmaze.act(action)
+       Hint: Review the act method in the TreasureMaze.py class.
+
+        Track the wins and losses from the game_status using win_history 
+     
+       Store the episode below in the Experience replay object
+       episode = [previous_envstate, action, reward, envstate, game_status]
+       Hint: Review the remember method in the GameExperience.py class.
+    
+       Train neural network model and evaluate loss
+       Hint: Call GameExperience.get_data to retrieve training data (input and target) 
+       and pass to the train_step method and assign it to batch_loss and append to the loss variable
+    
+  If the win rate is above the threshold and your model passes the completion check, that would be your epoch.</code></pre>
+<p>Note: A 100% win rate <b>DOES NOT EXPLICITLY MEAN</b> that you have solved the maze. It simply indicates that during the last evaluation, the pirate <i>happened</i> to get to the treasure. Be sure to utilise the <b>completion_check()</b> function to validate your pirate found the treasure at every starting point and consistently!</p>
+<p><b> You will need to complete the section starting with #START_HERE. Please use the pseudocode above as guidance. </b></p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[12]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">qtrain</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">maze</span><span class="p">,</span> <span class="o">**</span><span class="n">opt</span><span class="p">):</span>
+    <span class="c1"># exploration factor</span>
+    <span class="k">global</span> <span class="n">epsilon</span> 
+    
+    <span class="c1"># Number of epochs</span>
+    <span class="n">n_epoch</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;n_epoch&#39;</span><span class="p">,</span> <span class="mi">15000</span><span class="p">)</span>
+    
+    <span class="c1"># Maximum meory to store episodes</span>
+    <span class="n">max_memory</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_memory&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+    
+    <span class="c1"># Maximum data size for training</span>
+    <span class="n">data_size</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data_size&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+    
+    <span class="c1"># Frequency of target network updates</span>
+    <span class="n">target_update_freq</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;target_update_freq&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+    
+    <span class="c1"># Start time</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    
+    <span class="c1"># Construct environment/game from numpy array: maze (see argument above)</span>
+    <span class="n">qmaze</span> <span class="o">=</span> <span class="n">TreasureMaze</span><span class="p">(</span><span class="n">maze</span><span class="p">)</span>
+    
+    <span class="c1"># Target Network to better guide training</span>
+    <span class="n">target_model</span> <span class="o">=</span> <span class="n">clone_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="n">target_model</span><span class="o">.</span><span class="n">set_weights</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">get_weights</span><span class="p">())</span>
+    
+    <span class="c1"># Initialize experience replay object</span>
+    <span class="n">experience</span> <span class="o">=</span> <span class="n">GameExperience</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">target_model</span><span class="p">,</span> <span class="n">max_memory</span><span class="o">=</span><span class="n">max_memory</span><span class="p">)</span>
+
+    <span class="n">win_history</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># history of win/lose game</span>
+    <span class="n">hsize</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">maze</span><span class="o">.</span><span class="n">size</span> <span class="o">//</span> <span class="mi">2</span> <span class="c1">#history window size</span>
+    <span class="n">win_rate</span> <span class="o">=</span> <span class="mf">0.0</span>
+    
+    <span class="c1"># =============START_HERE================</span>
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_epoch</span><span class="p">):</span>  
+        <span class="n">loss</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">n_episodes</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Reset the environment at a random free cell</span>
+        <span class="n">agent_cell</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">qmaze</span><span class="o">.</span><span class="n">free_cells</span><span class="p">)</span>
+        <span class="n">qmaze</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">agent_cell</span><span class="p">)</span>
+
+        <span class="c1"># Set the initial environment state</span>
+        <span class="n">envstate</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">observe</span><span class="p">()</span>
+
+        <span class="n">game_over</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">game_over</span><span class="p">:</span>
+            <span class="c1"># Store previous state</span>
+            <span class="n">previous_envstate</span> <span class="o">=</span> <span class="n">envstate</span>
+
+            <span class="c1"># Decide on an action: explore or exploit</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">epsilon</span><span class="p">:</span>
+                <span class="c1"># Exploration: pick a random valid action</span>
+                <span class="n">valid</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">valid_actions</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">valid</span><span class="p">:</span>
+                    <span class="n">action</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">valid</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">action</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="n">num_actions</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Exploitation: pick best action from model</span>
+                <span class="n">state_reshaped</span> <span class="o">=</span> <span class="n">envstate</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">q_values</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">state_reshaped</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">action</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">q_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+            <span class="c1"># Apply the action and get the new state, reward, and game status</span>
+            <span class="n">envstate</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">game_status</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">act</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
+            <span class="c1"># Check if the game is over (win or lose)</span>
+            <span class="k">if</span> <span class="n">game_status</span> <span class="o">==</span> <span class="s1">&#39;win&#39;</span><span class="p">:</span>
+                <span class="n">win_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">game_over</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="n">game_status</span> <span class="o">==</span> <span class="s1">&#39;lose&#39;</span><span class="p">:</span>
+                <span class="n">win_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">game_over</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># Store the episode in experience replay</span>
+            <span class="n">episode</span> <span class="o">=</span> <span class="p">[</span><span class="n">previous_envstate</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">envstate</span><span class="p">,</span> <span class="n">game_over</span><span class="p">]</span>
+            <span class="n">experience</span><span class="o">.</span><span class="n">remember</span><span class="p">(</span><span class="n">episode</span><span class="p">)</span>
+
+            <span class="n">n_episodes</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="c1"># Train the neural network model</span>
+            <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="n">experience</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">data_size</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">batch_loss</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+                <span class="n">loss</span> <span class="o">+=</span> <span class="n">batch_loss</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+        <span class="c1"># Update target network periodically</span>
+        <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="n">target_update_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">target_model</span><span class="o">.</span><span class="n">set_weights</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">get_weights</span><span class="p">())</span>
+
+        <span class="c1"># Win rate over last hsize steps </span>
+        <span class="n">win_rate</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">win_history</span><span class="p">[</span><span class="o">-</span><span class="n">hsize</span><span class="p">:])</span> <span class="o">/</span> <span class="n">hsize</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">win_history</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">hsize</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+        <span class="c1"># Print the epoch, loss, episode, win count, win rate, and time for each epoch</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">format_time</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Epoch: </span><span class="si">{:03d}</span><span class="s2">/</span><span class="si">{:d}</span><span class="s2"> | Loss: </span><span class="si">{:.4f}</span><span class="s2"> | Episodes: </span><span class="si">{:d}</span><span class="s2"> | Win count: </span><span class="si">{:d}</span><span class="s2"> | Win rate: </span><span class="si">{:.3f}</span><span class="s2"> | time: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">epoch</span><span class="p">,</span> <span class="n">n_epoch</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">n_episodes</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">win_history</span><span class="p">),</span> <span class="n">win_rate</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
+
+        <span class="c1"># Check if training has exhausted all free cells and if in all</span>
+        <span class="c1"># cases the agent won</span>
+        <span class="k">if</span> <span class="n">win_rate</span> <span class="o">&gt;</span> <span class="mf">0.9</span><span class="p">:</span>
+            <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.05</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">epsilon</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">epsilon</span> <span class="o">*</span> <span class="n">epsilon_decay</span><span class="p">,</span> <span class="n">epsilon_min</span><span class="p">)</span>
+    
+        <span class="k">if</span> <span class="n">win_rate</span> <span class="o">&gt;=</span> <span class="mf">0.999</span> <span class="ow">and</span> <span class="n">completion_check</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">maze</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reached 100% win rate at epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">break</span>
+
+    <span class="n">total_time</span> <span class="o">=</span> <span class="n">format_time</span><span class="p">((</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Training complete in:&quot;</span><span class="p">,</span> <span class="n">total_time</span><span class="p">)</span>
+
+
+<span class="c1"># This is a small utility for printing readable time strings:</span>
+<span class="k">def</span> <span class="nf">format_time</span><span class="p">(</span><span class="n">seconds</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">seconds</span> <span class="o">&lt;</span> <span class="mi">400</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%.1f</span><span class="s2"> seconds&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">s</span><span class="p">,)</span>
+    <span class="k">elif</span> <span class="n">seconds</span> <span class="o">&lt;</span> <span class="mi">4000</span><span class="p">:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">seconds</span> <span class="o">/</span> <span class="mf">60.0</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2"> minutes&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">m</span><span class="p">,)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">seconds</span> <span class="o">/</span> <span class="mf">3600.0</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2"> hours&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">h</span><span class="p">,)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Test Your Model<a rel="noopener" class="anchor-link" href="#Test-Your-Model">&#182;</a></h2><p>Now we will start testing the deep Q-learning implementation. To begin, select <strong>Cell</strong>, then <strong>Run All</strong> from the menu bar. This will run your notebook. As it runs, you should see output begin to appear beneath the next few cells. The code below creates an <b>instance</b> of TreasureMaze. This does not show your actual training done.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[13]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">qmaze</span> <span class="o">=</span> <span class="n">TreasureMaze</span><span class="p">(</span><span class="n">maze</span><span class="p">)</span>
+<span class="n">show</span><span class="p">(</span><span class="n">qmaze</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[13]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>&lt;matplotlib.image.AxesImage at 0x7bfafcc02650&gt;</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img alt="No description has been provided for this image" src="javascript://"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>In the next code block, you will build your model using the <b>build_model</b> function and train it using deep Q-learning. Note: This step takes several minutes to fully run.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-danger" style="color: #333333;">
+<b>WARNING</b>  If you did not attempt the assignment, the code <b>will</b> error out at this section.
+ </div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[16]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">build_model</span><span class="p">(</span><span class="n">maze</span><span class="p">)</span>
+<span class="n">qtrain</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">maze</span><span class="p">,</span> <span class="n">n_epoch</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">max_memory</span><span class="o">=</span><span class="mi">8</span><span class="o">*</span><span class="n">maze</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">data_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">target_update_freq</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>/home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages/keras/src/layers/core/dense.py:87: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+  super().__init__(activity_regularizer=activity_regularizer, **kwargs)
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>Epoch: 000/999 | Loss: 1.4300 | Episodes: 164 | Win count: 0 | Win rate: 0.000 | time: 4.5 seconds
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1786145531.334167     519 service.cc:146] XLA service 0x7bfa38038010 initialized for platform CUDA (this does not guarantee that XLA will be used). Devices:
+I0000 00:00:1786145531.334212     519 service.cc:154]   StreamExecutor device (0): Tesla T4, Compute Capability 7.5
+I0000 00:00:1786145531.449374     519 device_compiler.h:188] Compiled cluster using XLA!  This line is logged at most once for the lifetime of the process.
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>Epoch: 001/999 | Loss: 0.4870 | Episodes: 155 | Win count: 0 | Win rate: 0.000 | time: 7.4 seconds
+Epoch: 002/999 | Loss: 0.3956 | Episodes: 142 | Win count: 0 | Win rate: 0.000 | time: 9.8 seconds
+Epoch: 003/999 | Loss: 0.3719 | Episodes: 147 | Win count: 0 | Win rate: 0.000 | time: 12.4 seconds
+Epoch: 004/999 | Loss: 0.0028 | Episodes: 1 | Win count: 1 | Win rate: 0.000 | time: 12.4 seconds
+Epoch: 005/999 | Loss: 0.4005 | Episodes: 144 | Win count: 1 | Win rate: 0.000 | time: 14.7 seconds
+Epoch: 006/999 | Loss: 0.3210 | Episodes: 139 | Win count: 1 | Win rate: 0.000 | time: 17.2 seconds
+Epoch: 007/999 | Loss: 0.3978 | Episodes: 157 | Win count: 1 | Win rate: 0.000 | time: 20.1 seconds
+Epoch: 008/999 | Loss: 0.3953 | Episodes: 155 | Win count: 1 | Win rate: 0.000 | time: 22.8 seconds
+Epoch: 009/999 | Loss: 0.3762 | Episodes: 150 | Win count: 1 | Win rate: 0.000 | time: 25.4 seconds
+Epoch: 010/999 | Loss: 0.3520 | Episodes: 147 | Win count: 1 | Win rate: 0.000 | time: 28.3 seconds
+Epoch: 011/999 | Loss: 0.3471 | Episodes: 150 | Win count: 1 | Win rate: 0.000 | time: 31.0 seconds
+Epoch: 012/999 | Loss: 0.3498 | Episodes: 146 | Win count: 1 | Win rate: 0.000 | time: 33.6 seconds
+Epoch: 013/999 | Loss: 0.3616 | Episodes: 150 | Win count: 1 | Win rate: 0.000 | time: 36.8 seconds
+Epoch: 014/999 | Loss: 0.3969 | Episodes: 149 | Win count: 1 | Win rate: 0.000 | time: 40.2 seconds
+Epoch: 015/999 | Loss: 0.3744 | Episodes: 152 | Win count: 1 | Win rate: 0.000 | time: 43.5 seconds
+Epoch: 016/999 | Loss: 0.3881 | Episodes: 146 | Win count: 1 | Win rate: 0.000 | time: 46.1 seconds
+Epoch: 017/999 | Loss: 0.3349 | Episodes: 145 | Win count: 1 | Win rate: 0.000 | time: 49.5 seconds
+Epoch: 018/999 | Loss: 0.2944 | Episodes: 144 | Win count: 1 | Win rate: 0.000 | time: 52.2 seconds
+Epoch: 019/999 | Loss: 0.2899 | Episodes: 148 | Win count: 1 | Win rate: 0.000 | time: 55.3 seconds
+Epoch: 020/999 | Loss: 0.3245 | Episodes: 146 | Win count: 1 | Win rate: 0.000 | time: 58.4 seconds
+Epoch: 021/999 | Loss: 0.0849 | Episodes: 36 | Win count: 2 | Win rate: 0.000 | time: 59.2 seconds
+Epoch: 022/999 | Loss: 0.3247 | Episodes: 147 | Win count: 2 | Win rate: 0.000 | time: 62.2 seconds
+Epoch: 023/999 | Loss: 0.2838 | Episodes: 131 | Win count: 3 | Win rate: 0.000 | time: 64.6 seconds
+Epoch: 024/999 | Loss: 0.2593 | Episodes: 108 | Win count: 4 | Win rate: 0.000 | time: 66.8 seconds
+Epoch: 025/999 | Loss: 0.3408 | Episodes: 145 | Win count: 4 | Win rate: 0.000 | time: 69.2 seconds
+Epoch: 026/999 | Loss: 0.2992 | Episodes: 146 | Win count: 4 | Win rate: 0.000 | time: 72.1 seconds
+Epoch: 027/999 | Loss: 0.3327 | Episodes: 143 | Win count: 4 | Win rate: 0.000 | time: 74.7 seconds
+Epoch: 028/999 | Loss: 0.3180 | Episodes: 149 | Win count: 5 | Win rate: 0.000 | time: 78.2 seconds
+Epoch: 029/999 | Loss: 0.1705 | Episodes: 73 | Win count: 6 | Win rate: 0.000 | time: 80.0 seconds
+Epoch: 030/999 | Loss: 0.3661 | Episodes: 150 | Win count: 6 | Win rate: 0.000 | time: 83.4 seconds
+Epoch: 031/999 | Loss: 0.3382 | Episodes: 142 | Win count: 6 | Win rate: 0.188 | time: 86.8 seconds
+Epoch: 032/999 | Loss: 0.3782 | Episodes: 149 | Win count: 6 | Win rate: 0.188 | time: 90.7 seconds
+Epoch: 033/999 | Loss: 0.3589 | Episodes: 147 | Win count: 6 | Win rate: 0.188 | time: 94.5 seconds
+Epoch: 034/999 | Loss: 0.3183 | Episodes: 151 | Win count: 6 | Win rate: 0.188 | time: 98.4 seconds
+Epoch: 035/999 | Loss: 0.3750 | Episodes: 158 | Win count: 6 | Win rate: 0.188 | time: 102.1 seconds
+Epoch: 036/999 | Loss: 0.3535 | Episodes: 160 | Win count: 6 | Win rate: 0.156 | time: 105.6 seconds
+Epoch: 037/999 | Loss: 0.3966 | Episodes: 147 | Win count: 6 | Win rate: 0.156 | time: 109.0 seconds
+Epoch: 038/999 | Loss: 0.3141 | Episodes: 138 | Win count: 6 | Win rate: 0.156 | time: 112.4 seconds
+Epoch: 039/999 | Loss: 0.3184 | Episodes: 151 | Win count: 6 | Win rate: 0.156 | time: 116.1 seconds
+Epoch: 040/999 | Loss: 0.0146 | Episodes: 7 | Win count: 7 | Win rate: 0.188 | time: 116.3 seconds
+Epoch: 041/999 | Loss: 0.3407 | Episodes: 142 | Win count: 7 | Win rate: 0.188 | time: 119.7 seconds
+Epoch: 042/999 | Loss: 0.2422 | Episodes: 106 | Win count: 8 | Win rate: 0.219 | time: 122.4 seconds
+Epoch: 043/999 | Loss: 0.3751 | Episodes: 142 | Win count: 8 | Win rate: 0.219 | time: 126.2 seconds
+Epoch: 044/999 | Loss: 0.3402 | Episodes: 156 | Win count: 8 | Win rate: 0.219 | time: 129.8 seconds
+Epoch: 045/999 | Loss: 0.2602 | Episodes: 127 | Win count: 9 | Win rate: 0.250 | time: 133.0 seconds
+Epoch: 046/999 | Loss: 0.3807 | Episodes: 149 | Win count: 9 | Win rate: 0.250 | time: 136.8 seconds
+Epoch: 047/999 | Loss: 0.3960 | Episodes: 151 | Win count: 9 | Win rate: 0.250 | time: 140.9 seconds
+Epoch: 048/999 | Loss: 0.3776 | Episodes: 145 | Win count: 9 | Win rate: 0.250 | time: 145.0 seconds
+Epoch: 049/999 | Loss: 0.2597 | Episodes: 114 | Win count: 10 | Win rate: 0.281 | time: 148.1 seconds
+Epoch: 050/999 | Loss: 0.3518 | Episodes: 145 | Win count: 10 | Win rate: 0.281 | time: 152.5 seconds
+Epoch: 051/999 | Loss: 0.2949 | Episodes: 139 | Win count: 10 | Win rate: 0.281 | time: 156.2 seconds
+Epoch: 052/999 | Loss: 0.0063 | Episodes: 4 | Win count: 11 | Win rate: 0.312 | time: 156.3 seconds
+Epoch: 053/999 | Loss: 0.2239 | Episodes: 93 | Win count: 12 | Win rate: 0.312 | time: 158.9 seconds
+Epoch: 054/999 | Loss: 0.3819 | Episodes: 140 | Win count: 12 | Win rate: 0.312 | time: 162.7 seconds
+Epoch: 055/999 | Loss: 0.3095 | Episodes: 151 | Win count: 12 | Win rate: 0.281 | time: 166.7 seconds
+Epoch: 056/999 | Loss: 0.3657 | Episodes: 144 | Win count: 12 | Win rate: 0.250 | time: 171.0 seconds
+Epoch: 057/999 | Loss: 0.2975 | Episodes: 147 | Win count: 12 | Win rate: 0.250 | time: 174.8 seconds
+Epoch: 058/999 | Loss: 0.1996 | Episodes: 115 | Win count: 13 | Win rate: 0.281 | time: 178.4 seconds
+Epoch: 059/999 | Loss: 0.2966 | Episodes: 154 | Win count: 13 | Win rate: 0.281 | time: 182.4 seconds
+Epoch: 060/999 | Loss: 0.3151 | Episodes: 146 | Win count: 13 | Win rate: 0.250 | time: 186.7 seconds
+Epoch: 061/999 | Loss: 0.0958 | Episodes: 48 | Win count: 14 | Win rate: 0.250 | time: 187.9 seconds
+Epoch: 062/999 | Loss: 0.3591 | Episodes: 150 | Win count: 14 | Win rate: 0.250 | time: 192.2 seconds
+Epoch: 063/999 | Loss: 0.2563 | Episodes: 108 | Win count: 15 | Win rate: 0.281 | time: 195.6 seconds
+Epoch: 064/999 | Loss: 0.3171 | Episodes: 130 | Win count: 16 | Win rate: 0.312 | time: 199.7 seconds
+Epoch: 065/999 | Loss: 0.3496 | Episodes: 143 | Win count: 16 | Win rate: 0.312 | time: 203.8 seconds
+Epoch: 066/999 | Loss: 0.0061 | Episodes: 1 | Win count: 17 | Win rate: 0.344 | time: 203.8 seconds
+Epoch: 067/999 | Loss: 0.3837 | Episodes: 148 | Win count: 17 | Win rate: 0.344 | time: 208.6 seconds
+Epoch: 068/999 | Loss: 0.0414 | Episodes: 23 | Win count: 18 | Win rate: 0.375 | time: 209.1 seconds
+Epoch: 069/999 | Loss: 0.0003 | Episodes: 1 | Win count: 19 | Win rate: 0.406 | time: 209.1 seconds
+Epoch: 070/999 | Loss: 0.4594 | Episodes: 155 | Win count: 19 | Win rate: 0.406 | time: 214.1 seconds
+Epoch: 071/999 | Loss: 0.0483 | Episodes: 15 | Win count: 20 | Win rate: 0.438 | time: 214.6 seconds
+Epoch: 072/999 | Loss: 0.0015 | Episodes: 1 | Win count: 21 | Win rate: 0.438 | time: 214.7 seconds
+Epoch: 073/999 | Loss: 0.4766 | Episodes: 151 | Win count: 21 | Win rate: 0.438 | time: 219.9 seconds
+Epoch: 074/999 | Loss: 0.4931 | Episodes: 161 | Win count: 21 | Win rate: 0.406 | time: 225.0 seconds
+Epoch: 075/999 | Loss: 0.2168 | Episodes: 84 | Win count: 22 | Win rate: 0.438 | time: 227.9 seconds
+Epoch: 076/999 | Loss: 0.3061 | Episodes: 138 | Win count: 22 | Win rate: 0.438 | time: 232.4 seconds
+Epoch: 077/999 | Loss: 0.1938 | Episodes: 96 | Win count: 23 | Win rate: 0.438 | time: 235.4 seconds
+Epoch: 078/999 | Loss: 0.3448 | Episodes: 144 | Win count: 23 | Win rate: 0.438 | time: 240.2 seconds
+Epoch: 079/999 | Loss: 0.3438 | Episodes: 153 | Win count: 23 | Win rate: 0.438 | time: 245.3 seconds
+Epoch: 080/999 | Loss: 0.3309 | Episodes: 150 | Win count: 23 | Win rate: 0.438 | time: 250.1 seconds
+Epoch: 081/999 | Loss: 0.2860 | Episodes: 148 | Win count: 23 | Win rate: 0.406 | time: 255.6 seconds
+Epoch: 082/999 | Loss: 0.2683 | Episodes: 140 | Win count: 23 | Win rate: 0.406 | time: 260.5 seconds
+Epoch: 083/999 | Loss: 0.2551 | Episodes: 152 | Win count: 23 | Win rate: 0.406 | time: 265.6 seconds
+Epoch: 084/999 | Loss: 0.2652 | Episodes: 154 | Win count: 23 | Win rate: 0.375 | time: 272.1 seconds
+Epoch: 085/999 | Loss: 0.2630 | Episodes: 145 | Win count: 23 | Win rate: 0.344 | time: 277.3 seconds
+Epoch: 086/999 | Loss: 0.2653 | Episodes: 142 | Win count: 23 | Win rate: 0.344 | time: 281.4 seconds
+Epoch: 087/999 | Loss: 0.2381 | Episodes: 139 | Win count: 23 | Win rate: 0.344 | time: 286.2 seconds
+Epoch: 088/999 | Loss: 0.0855 | Episodes: 48 | Win count: 24 | Win rate: 0.375 | time: 287.8 seconds
+Epoch: 089/999 | Loss: 0.0106 | Episodes: 7 | Win count: 25 | Win rate: 0.406 | time: 288.1 seconds
+Epoch: 090/999 | Loss: 0.3693 | Episodes: 152 | Win count: 25 | Win rate: 0.375 | time: 294.0 seconds
+Epoch: 091/999 | Loss: 0.0650 | Episodes: 29 | Win count: 26 | Win rate: 0.406 | time: 295.0 seconds
+Epoch: 092/999 | Loss: 0.3140 | Episodes: 141 | Win count: 26 | Win rate: 0.406 | time: 300.0 seconds
+Epoch: 093/999 | Loss: 0.3123 | Episodes: 137 | Win count: 26 | Win rate: 0.375 | time: 305.2 seconds
+Epoch: 094/999 | Loss: 0.1847 | Episodes: 95 | Win count: 27 | Win rate: 0.406 | time: 308.7 seconds
+Epoch: 095/999 | Loss: 0.1616 | Episodes: 71 | Win count: 28 | Win rate: 0.406 | time: 311.2 seconds
+Epoch: 096/999 | Loss: 0.3588 | Episodes: 157 | Win count: 29 | Win rate: 0.406 | time: 317.7 seconds
+Epoch: 097/999 | Loss: 0.3864 | Episodes: 152 | Win count: 29 | Win rate: 0.406 | time: 323.9 seconds
+Epoch: 098/999 | Loss: 0.3891 | Episodes: 147 | Win count: 29 | Win rate: 0.375 | time: 329.8 seconds
+Epoch: 099/999 | Loss: 0.2792 | Episodes: 147 | Win count: 29 | Win rate: 0.375 | time: 335.6 seconds
+Epoch: 100/999 | Loss: 0.2763 | Episodes: 148 | Win count: 29 | Win rate: 0.344 | time: 341.4 seconds
+Epoch: 101/999 | Loss: 0.2812 | Episodes: 148 | Win count: 29 | Win rate: 0.312 | time: 346.4 seconds
+Epoch: 102/999 | Loss: 0.0207 | Episodes: 14 | Win count: 30 | Win rate: 0.344 | time: 347.0 seconds
+Epoch: 103/999 | Loss: 0.0758 | Episodes: 21 | Win count: 31 | Win rate: 0.344 | time: 347.7 seconds
+Epoch: 104/999 | Loss: 0.3978 | Episodes: 151 | Win count: 31 | Win rate: 0.312 | time: 353.7 seconds
+Epoch: 105/999 | Loss: 0.3458 | Episodes: 147 | Win count: 31 | Win rate: 0.312 | time: 359.5 seconds
+Epoch: 106/999 | Loss: 0.3493 | Episodes: 145 | Win count: 31 | Win rate: 0.312 | time: 364.5 seconds
+Epoch: 107/999 | Loss: 0.2507 | Episodes: 142 | Win count: 31 | Win rate: 0.281 | time: 370.1 seconds
+Epoch: 108/999 | Loss: 0.2295 | Episodes: 154 | Win count: 31 | Win rate: 0.281 | time: 376.2 seconds
+Epoch: 109/999 | Loss: 0.0470 | Episodes: 33 | Win count: 32 | Win rate: 0.281 | time: 377.5 seconds
+Epoch: 110/999 | Loss: 0.0994 | Episodes: 56 | Win count: 33 | Win rate: 0.312 | time: 379.7 seconds
+Epoch: 111/999 | Loss: 0.2931 | Episodes: 140 | Win count: 33 | Win rate: 0.312 | time: 385.5 seconds
+Epoch: 112/999 | Loss: 0.2950 | Episodes: 144 | Win count: 33 | Win rate: 0.312 | time: 391.2 seconds
+Epoch: 113/999 | Loss: 0.0061 | Episodes: 4 | Win count: 34 | Win rate: 0.344 | time: 391.3 seconds
+Epoch: 114/999 | Loss: 0.3818 | Episodes: 137 | Win count: 34 | Win rate: 0.344 | time: 396.8 seconds
+Epoch: 115/999 | Loss: 0.2822 | Episodes: 154 | Win count: 34 | Win rate: 0.344 | time: 6.72 minutes
+Epoch: 116/999 | Loss: 0.2432 | Episodes: 147 | Win count: 34 | Win rate: 0.344 | time: 6.81 minutes
+Epoch: 117/999 | Loss: 0.2293 | Episodes: 150 | Win count: 34 | Win rate: 0.344 | time: 6.92 minutes
+Epoch: 118/999 | Loss: 0.0300 | Episodes: 20 | Win count: 35 | Win rate: 0.375 | time: 6.93 minutes
+Epoch: 119/999 | Loss: 0.3273 | Episodes: 155 | Win count: 35 | Win rate: 0.375 | time: 7.04 minutes
+Epoch: 120/999 | Loss: 0.1167 | Episodes: 55 | Win count: 36 | Win rate: 0.375 | time: 7.07 minutes
+Epoch: 121/999 | Loss: 0.0801 | Episodes: 24 | Win count: 37 | Win rate: 0.375 | time: 7.08 minutes
+Epoch: 122/999 | Loss: 0.4606 | Episodes: 150 | Win count: 37 | Win rate: 0.375 | time: 7.19 minutes
+Epoch: 123/999 | Loss: 0.0015 | Episodes: 1 | Win count: 38 | Win rate: 0.375 | time: 7.19 minutes
+Epoch: 124/999 | Loss: 0.5076 | Episodes: 145 | Win count: 38 | Win rate: 0.375 | time: 7.28 minutes
+Epoch: 125/999 | Loss: 0.0015 | Episodes: 1 | Win count: 39 | Win rate: 0.406 | time: 7.29 minutes
+Epoch: 126/999 | Loss: 0.4497 | Episodes: 148 | Win count: 39 | Win rate: 0.375 | time: 7.38 minutes
+Epoch: 127/999 | Loss: 0.3136 | Episodes: 144 | Win count: 39 | Win rate: 0.344 | time: 7.47 minutes
+Epoch: 128/999 | Loss: 0.0026 | Episodes: 1 | Win count: 40 | Win rate: 0.344 | time: 7.47 minutes
+Epoch: 129/999 | Loss: 0.2129 | Episodes: 126 | Win count: 41 | Win rate: 0.375 | time: 7.56 minutes
+Epoch: 130/999 | Loss: 0.1290 | Episodes: 64 | Win count: 42 | Win rate: 0.406 | time: 7.61 minutes
+Epoch: 131/999 | Loss: 0.1251 | Episodes: 51 | Win count: 43 | Win rate: 0.438 | time: 7.64 minutes
+Epoch: 132/999 | Loss: 0.4040 | Episodes: 146 | Win count: 43 | Win rate: 0.438 | time: 7.74 minutes
+Epoch: 133/999 | Loss: 0.3762 | Episodes: 151 | Win count: 43 | Win rate: 0.438 | time: 7.84 minutes
+Epoch: 134/999 | Loss: 0.3372 | Episodes: 140 | Win count: 44 | Win rate: 0.438 | time: 7.94 minutes
+Epoch: 135/999 | Loss: 0.2788 | Episodes: 124 | Win count: 45 | Win rate: 0.438 | time: 8.02 minutes
+Epoch: 136/999 | Loss: 0.1480 | Episodes: 65 | Win count: 46 | Win rate: 0.469 | time: 8.07 minutes
+Epoch: 137/999 | Loss: 0.2126 | Episodes: 75 | Win count: 47 | Win rate: 0.500 | time: 8.12 minutes
+Epoch: 138/999 | Loss: 0.2290 | Episodes: 89 | Win count: 48 | Win rate: 0.531 | time: 8.18 minutes
+Epoch: 139/999 | Loss: 0.4061 | Episodes: 150 | Win count: 48 | Win rate: 0.531 | time: 8.29 minutes
+Epoch: 140/999 | Loss: 0.3396 | Episodes: 144 | Win count: 48 | Win rate: 0.531 | time: 8.39 minutes
+Epoch: 141/999 | Loss: 0.0972 | Episodes: 58 | Win count: 49 | Win rate: 0.531 | time: 8.44 minutes
+Epoch: 142/999 | Loss: 0.1920 | Episodes: 121 | Win count: 50 | Win rate: 0.531 | time: 8.52 minutes
+Epoch: 143/999 | Loss: 0.0166 | Episodes: 12 | Win count: 51 | Win rate: 0.562 | time: 8.53 minutes
+Epoch: 144/999 | Loss: 0.1374 | Episodes: 81 | Win count: 52 | Win rate: 0.594 | time: 8.59 minutes
+Epoch: 145/999 | Loss: 0.2381 | Episodes: 128 | Win count: 53 | Win rate: 0.594 | time: 8.68 minutes
+Epoch: 146/999 | Loss: 0.0892 | Episodes: 48 | Win count: 54 | Win rate: 0.625 | time: 8.72 minutes
+Epoch: 147/999 | Loss: 0.4105 | Episodes: 160 | Win count: 54 | Win rate: 0.625 | time: 8.84 minutes
+Epoch: 148/999 | Loss: 0.1107 | Episodes: 46 | Win count: 55 | Win rate: 0.656 | time: 8.87 minutes
+Epoch: 149/999 | Loss: 0.0245 | Episodes: 11 | Win count: 56 | Win rate: 0.688 | time: 8.88 minutes
+Epoch: 150/999 | Loss: 0.2351 | Episodes: 84 | Win count: 57 | Win rate: 0.688 | time: 8.95 minutes
+Epoch: 151/999 | Loss: 0.1752 | Episodes: 23 | Win count: 58 | Win rate: 0.719 | time: 8.97 minutes
+Epoch: 152/999 | Loss: 0.1271 | Episodes: 18 | Win count: 59 | Win rate: 0.719 | time: 8.98 minutes
+Epoch: 153/999 | Loss: 0.7996 | Episodes: 139 | Win count: 59 | Win rate: 0.688 | time: 9.08 minutes
+Epoch: 154/999 | Loss: 0.5069 | Episodes: 144 | Win count: 59 | Win rate: 0.688 | time: 9.19 minutes
+Epoch: 155/999 | Loss: 0.4205 | Episodes: 155 | Win count: 60 | Win rate: 0.688 | time: 9.31 minutes
+Epoch: 156/999 | Loss: 0.2631 | Episodes: 144 | Win count: 61 | Win rate: 0.719 | time: 9.43 minutes
+Epoch: 157/999 | Loss: 0.0175 | Episodes: 7 | Win count: 62 | Win rate: 0.719 | time: 9.44 minutes
+Epoch: 158/999 | Loss: 0.3554 | Episodes: 149 | Win count: 62 | Win rate: 0.719 | time: 9.57 minutes
+Epoch: 159/999 | Loss: 0.0337 | Episodes: 12 | Win count: 63 | Win rate: 0.750 | time: 9.58 minutes
+Epoch: 160/999 | Loss: 0.2932 | Episodes: 147 | Win count: 63 | Win rate: 0.719 | time: 9.70 minutes
+Epoch: 161/999 | Loss: 0.1486 | Episodes: 91 | Win count: 64 | Win rate: 0.719 | time: 9.78 minutes
+Epoch: 162/999 | Loss: 0.2708 | Episodes: 150 | Win count: 64 | Win rate: 0.688 | time: 9.90 minutes
+Epoch: 163/999 | Loss: 0.2337 | Episodes: 153 | Win count: 64 | Win rate: 0.656 | time: 10.03 minutes
+Epoch: 164/999 | Loss: 0.1931 | Episodes: 129 | Win count: 65 | Win rate: 0.688 | time: 10.14 minutes
+Epoch: 165/999 | Loss: 0.2358 | Episodes: 147 | Win count: 65 | Win rate: 0.688 | time: 10.27 minutes
+Epoch: 166/999 | Loss: 0.0309 | Episodes: 18 | Win count: 66 | Win rate: 0.688 | time: 10.28 minutes
+Epoch: 167/999 | Loss: 0.0030 | Episodes: 2 | Win count: 67 | Win rate: 0.688 | time: 10.28 minutes
+Epoch: 168/999 | Loss: 0.0390 | Episodes: 24 | Win count: 68 | Win rate: 0.688 | time: 10.30 minutes
+Epoch: 169/999 | Loss: 0.0522 | Episodes: 33 | Win count: 69 | Win rate: 0.688 | time: 10.33 minutes
+Epoch: 170/999 | Loss: 0.0058 | Episodes: 3 | Win count: 70 | Win rate: 0.688 | time: 10.33 minutes
+Epoch: 171/999 | Loss: 0.0376 | Episodes: 21 | Win count: 71 | Win rate: 0.719 | time: 10.34 minutes
+Epoch: 172/999 | Loss: 0.0492 | Episodes: 26 | Win count: 72 | Win rate: 0.750 | time: 10.36 minutes
+Epoch: 173/999 | Loss: 0.3044 | Episodes: 139 | Win count: 72 | Win rate: 0.719 | time: 10.48 minutes
+Epoch: 174/999 | Loss: 0.2068 | Episodes: 119 | Win count: 73 | Win rate: 0.719 | time: 10.59 minutes
+Epoch: 175/999 | Loss: 0.1044 | Episodes: 61 | Win count: 74 | Win rate: 0.719 | time: 10.64 minutes
+Epoch: 176/999 | Loss: 0.0099 | Episodes: 6 | Win count: 75 | Win rate: 0.719 | time: 10.65 minutes
+Epoch: 177/999 | Loss: 0.0228 | Episodes: 10 | Win count: 76 | Win rate: 0.719 | time: 10.65 minutes
+Epoch: 178/999 | Loss: 0.1833 | Episodes: 89 | Win count: 77 | Win rate: 0.719 | time: 10.73 minutes
+Epoch: 179/999 | Loss: 0.0693 | Episodes: 37 | Win count: 78 | Win rate: 0.750 | time: 10.75 minutes
+Epoch: 180/999 | Loss: 0.2921 | Episodes: 153 | Win count: 78 | Win rate: 0.719 | time: 10.90 minutes
+Epoch: 181/999 | Loss: 0.0149 | Episodes: 9 | Win count: 79 | Win rate: 0.719 | time: 10.90 minutes
+Epoch: 182/999 | Loss: 0.0893 | Episodes: 46 | Win count: 80 | Win rate: 0.719 | time: 10.94 minutes
+Epoch: 183/999 | Loss: 0.1551 | Episodes: 69 | Win count: 81 | Win rate: 0.719 | time: 11.00 minutes
+Epoch: 184/999 | Loss: 0.1912 | Episodes: 92 | Win count: 82 | Win rate: 0.719 | time: 11.08 minutes
+Epoch: 185/999 | Loss: 0.0741 | Episodes: 36 | Win count: 83 | Win rate: 0.750 | time: 11.10 minutes
+Epoch: 186/999 | Loss: 0.1175 | Episodes: 60 | Win count: 84 | Win rate: 0.781 | time: 11.15 minutes
+Epoch: 187/999 | Loss: 0.0895 | Episodes: 45 | Win count: 85 | Win rate: 0.781 | time: 11.19 minutes
+Epoch: 188/999 | Loss: 0.0226 | Episodes: 11 | Win count: 86 | Win rate: 0.781 | time: 11.20 minutes
+Epoch: 189/999 | Loss: 0.0545 | Episodes: 26 | Win count: 87 | Win rate: 0.781 | time: 11.23 minutes
+Epoch: 190/999 | Loss: 0.0044 | Episodes: 2 | Win count: 88 | Win rate: 0.812 | time: 11.23 minutes
+Epoch: 191/999 | Loss: 0.1249 | Episodes: 53 | Win count: 89 | Win rate: 0.812 | time: 11.28 minutes
+Epoch: 192/999 | Loss: 0.0024 | Episodes: 1 | Win count: 90 | Win rate: 0.844 | time: 11.28 minutes
+Epoch: 193/999 | Loss: 0.0037 | Episodes: 2 | Win count: 91 | Win rate: 0.844 | time: 11.28 minutes
+Epoch: 194/999 | Loss: 0.0022 | Episodes: 1 | Win count: 92 | Win rate: 0.875 | time: 11.28 minutes
+Epoch: 195/999 | Loss: 0.0703 | Episodes: 33 | Win count: 93 | Win rate: 0.906 | time: 11.32 minutes
+Epoch: 196/999 | Loss: 0.0579 | Episodes: 26 | Win count: 94 | Win rate: 0.906 | time: 11.35 minutes
+Epoch: 197/999 | Loss: 0.1065 | Episodes: 49 | Win count: 95 | Win rate: 0.938 | time: 11.41 minutes
+Epoch: 198/999 | Loss: 0.0554 | Episodes: 26 | Win count: 96 | Win rate: 0.938 | time: 11.43 minutes
+Epoch: 199/999 | Loss: 0.3028 | Episodes: 147 | Win count: 97 | Win rate: 0.938 | time: 11.61 minutes
+Epoch: 200/999 | Loss: 0.2923 | Episodes: 157 | Win count: 98 | Win rate: 0.938 | time: 11.79 minutes
+Epoch: 201/999 | Loss: 0.1590 | Episodes: 25 | Win count: 99 | Win rate: 0.938 | time: 11.82 minutes
+Epoch: 202/999 | Loss: 0.0095 | Episodes: 3 | Win count: 100 | Win rate: 0.938 | time: 11.82 minutes
+Epoch: 203/999 | Loss: 0.4236 | Episodes: 100 | Win count: 101 | Win rate: 0.938 | time: 11.94 minutes
+Epoch: 204/999 | Loss: 0.1364 | Episodes: 40 | Win count: 102 | Win rate: 0.938 | time: 11.98 minutes
+Epoch: 205/999 | Loss: 0.1595 | Episodes: 55 | Win count: 103 | Win rate: 0.969 | time: 12.05 minutes
+Epoch: 206/999 | Loss: 0.0312 | Episodes: 10 | Win count: 104 | Win rate: 0.969 | time: 12.06 minutes
+Epoch: 207/999 | Loss: 0.0537 | Episodes: 17 | Win count: 105 | Win rate: 0.969 | time: 12.09 minutes
+Epoch: 208/999 | Loss: 0.0384 | Episodes: 16 | Win count: 106 | Win rate: 0.969 | time: 12.11 minutes
+Epoch: 209/999 | Loss: 0.2795 | Episodes: 135 | Win count: 106 | Win rate: 0.938 | time: 12.27 minutes
+Epoch: 210/999 | Loss: 0.0419 | Episodes: 22 | Win count: 107 | Win rate: 0.938 | time: 12.29 minutes
+Epoch: 211/999 | Loss: 0.3453 | Episodes: 144 | Win count: 107 | Win rate: 0.906 | time: 12.47 minutes
+Epoch: 212/999 | Loss: 0.2588 | Episodes: 142 | Win count: 108 | Win rate: 0.938 | time: 12.65 minutes
+Epoch: 213/999 | Loss: 0.0553 | Episodes: 36 | Win count: 109 | Win rate: 0.938 | time: 12.69 minutes
+Epoch: 214/999 | Loss: 0.0804 | Episodes: 58 | Win count: 110 | Win rate: 0.938 | time: 12.76 minutes
+Epoch: 215/999 | Loss: 0.0136 | Episodes: 9 | Win count: 111 | Win rate: 0.938 | time: 12.77 minutes
+Epoch: 216/999 | Loss: 0.0195 | Episodes: 13 | Win count: 112 | Win rate: 0.938 | time: 12.79 minutes
+Epoch: 217/999 | Loss: 0.0462 | Episodes: 28 | Win count: 113 | Win rate: 0.938 | time: 12.82 minutes
+Epoch: 218/999 | Loss: 0.0150 | Episodes: 10 | Win count: 114 | Win rate: 0.938 | time: 12.83 minutes
+Epoch: 219/999 | Loss: 0.0233 | Episodes: 15 | Win count: 115 | Win rate: 0.938 | time: 12.85 minutes
+Epoch: 220/999 | Loss: 0.0497 | Episodes: 28 | Win count: 116 | Win rate: 0.938 | time: 12.88 minutes
+Epoch: 221/999 | Loss: 0.1362 | Episodes: 98 | Win count: 117 | Win rate: 0.938 | time: 13.00 minutes
+Epoch: 222/999 | Loss: 0.0023 | Episodes: 2 | Win count: 118 | Win rate: 0.938 | time: 13.00 minutes
+Epoch: 223/999 | Loss: 0.1604 | Episodes: 136 | Win count: 118 | Win rate: 0.906 | time: 13.16 minutes
+Epoch: 224/999 | Loss: 0.0157 | Episodes: 14 | Win count: 119 | Win rate: 0.906 | time: 13.18 minutes
+Epoch: 225/999 | Loss: 0.0689 | Episodes: 67 | Win count: 120 | Win rate: 0.906 | time: 13.26 minutes
+Epoch: 226/999 | Loss: 0.0790 | Episodes: 94 | Win count: 121 | Win rate: 0.906 | time: 13.37 minutes
+Epoch: 227/999 | Loss: 0.0385 | Episodes: 42 | Win count: 122 | Win rate: 0.906 | time: 13.41 minutes
+Epoch: 228/999 | Loss: 0.0209 | Episodes: 16 | Win count: 123 | Win rate: 0.906 | time: 13.43 minutes
+Epoch: 229/999 | Loss: 0.0560 | Episodes: 52 | Win count: 124 | Win rate: 0.906 | time: 13.49 minutes
+Epoch: 230/999 | Loss: 0.0681 | Episodes: 56 | Win count: 125 | Win rate: 0.906 | time: 13.56 minutes
+Epoch: 231/999 | Loss: 0.0278 | Episodes: 25 | Win count: 126 | Win rate: 0.906 | time: 13.59 minutes
+Epoch: 232/999 | Loss: 0.0182 | Episodes: 15 | Win count: 127 | Win rate: 0.906 | time: 13.60 minutes
+Epoch: 233/999 | Loss: 0.0377 | Episodes: 33 | Win count: 128 | Win rate: 0.906 | time: 13.64 minutes
+Epoch: 234/999 | Loss: 0.0353 | Episodes: 34 | Win count: 129 | Win rate: 0.906 | time: 13.68 minutes
+Epoch: 235/999 | Loss: 0.0314 | Episodes: 23 | Win count: 130 | Win rate: 0.906 | time: 13.71 minutes
+Epoch: 236/999 | Loss: 0.0197 | Episodes: 19 | Win count: 131 | Win rate: 0.906 | time: 13.73 minutes
+Epoch: 237/999 | Loss: 0.0186 | Episodes: 20 | Win count: 132 | Win rate: 0.906 | time: 13.75 minutes
+Epoch: 238/999 | Loss: 0.0114 | Episodes: 12 | Win count: 133 | Win rate: 0.906 | time: 13.77 minutes
+Epoch: 239/999 | Loss: 0.0153 | Episodes: 17 | Win count: 134 | Win rate: 0.906 | time: 13.79 minutes
+Epoch: 240/999 | Loss: 0.0260 | Episodes: 31 | Win count: 135 | Win rate: 0.906 | time: 13.82 minutes
+Epoch: 241/999 | Loss: 0.0369 | Episodes: 32 | Win count: 136 | Win rate: 0.938 | time: 13.86 minutes
+Epoch: 242/999 | Loss: 0.0165 | Episodes: 20 | Win count: 137 | Win rate: 0.938 | time: 13.89 minutes
+Epoch: 243/999 | Loss: 0.0256 | Episodes: 25 | Win count: 138 | Win rate: 0.969 | time: 13.92 minutes
+Epoch: 244/999 | Loss: 0.0122 | Episodes: 13 | Win count: 139 | Win rate: 0.969 | time: 13.93 minutes
+Epoch: 245/999 | Loss: 0.0199 | Episodes: 22 | Win count: 140 | Win rate: 0.969 | time: 13.96 minutes
+Epoch: 246/999 | Loss: 0.0298 | Episodes: 37 | Win count: 141 | Win rate: 0.969 | time: 14.00 minutes
+Epoch: 247/999 | Loss: 0.0327 | Episodes: 32 | Win count: 142 | Win rate: 0.969 | time: 14.04 minutes
+Epoch: 248/999 | Loss: 0.0024 | Episodes: 3 | Win count: 143 | Win rate: 0.969 | time: 14.04 minutes
+Epoch: 249/999 | Loss: 0.0108 | Episodes: 12 | Win count: 144 | Win rate: 0.969 | time: 14.06 minutes
+Epoch: 250/999 | Loss: 0.0212 | Episodes: 23 | Win count: 145 | Win rate: 0.969 | time: 14.08 minutes
+Epoch: 251/999 | Loss: 0.1824 | Episodes: 32 | Win count: 146 | Win rate: 0.969 | time: 14.12 minutes
+Epoch: 252/999 | Loss: 0.1908 | Episodes: 69 | Win count: 147 | Win rate: 0.969 | time: 14.21 minutes
+Epoch: 253/999 | Loss: 0.0138 | Episodes: 5 | Win count: 148 | Win rate: 0.969 | time: 14.22 minutes
+Epoch: 254/999 | Loss: 0.0125 | Episodes: 8 | Win count: 149 | Win rate: 0.969 | time: 14.23 minutes
+Epoch: 255/999 | Loss: 0.0128 | Episodes: 7 | Win count: 150 | Win rate: 1.000 | time: 14.23 minutes
+Epoch: 256/999 | Loss: 0.0488 | Episodes: 31 | Win count: 151 | Win rate: 1.000 | time: 14.28 minutes
+Epoch: 257/999 | Loss: 0.0409 | Episodes: 29 | Win count: 152 | Win rate: 1.000 | time: 14.33 minutes
+Epoch: 258/999 | Loss: 0.0480 | Episodes: 27 | Win count: 153 | Win rate: 1.000 | time: 14.37 minutes
+Epoch: 259/999 | Loss: 0.0785 | Episodes: 41 | Win count: 154 | Win rate: 1.000 | time: 14.44 minutes
+Epoch: 260/999 | Loss: 0.0150 | Episodes: 12 | Win count: 155 | Win rate: 1.000 | time: 14.47 minutes
+Epoch: 261/999 | Loss: 0.0009 | Episodes: 1 | Win count: 156 | Win rate: 1.000 | time: 14.48 minutes
+Epoch: 262/999 | Loss: 0.0417 | Episodes: 31 | Win count: 157 | Win rate: 1.000 | time: 14.53 minutes
+Epoch: 263/999 | Loss: 0.0086 | Episodes: 9 | Win count: 158 | Win rate: 1.000 | time: 14.56 minutes
+Epoch: 264/999 | Loss: 0.0307 | Episodes: 24 | Win count: 159 | Win rate: 1.000 | time: 14.60 minutes
+Epoch: 265/999 | Loss: 0.0867 | Episodes: 60 | Win count: 160 | Win rate: 1.000 | time: 14.68 minutes
+Epoch: 266/999 | Loss: 0.0756 | Episodes: 47 | Win count: 161 | Win rate: 1.000 | time: 14.75 minutes
+Epoch: 267/999 | Loss: 0.0239 | Episodes: 18 | Win count: 162 | Win rate: 1.000 | time: 14.78 minutes
+Epoch: 268/999 | Loss: 0.0049 | Episodes: 4 | Win count: 163 | Win rate: 1.000 | time: 14.80 minutes
+Epoch: 269/999 | Loss: 0.0584 | Episodes: 41 | Win count: 164 | Win rate: 1.000 | time: 14.86 minutes
+Epoch: 270/999 | Loss: 0.0113 | Episodes: 8 | Win count: 165 | Win rate: 1.000 | time: 14.89 minutes
+Epoch: 271/999 | Loss: 0.0310 | Episodes: 19 | Win count: 166 | Win rate: 1.000 | time: 14.92 minutes
+Epoch: 272/999 | Loss: 0.0348 | Episodes: 24 | Win count: 167 | Win rate: 1.000 | time: 14.96 minutes
+Epoch: 273/999 | Loss: 0.0338 | Episodes: 24 | Win count: 168 | Win rate: 1.000 | time: 15.00 minutes
+Epoch: 274/999 | Loss: 0.0255 | Episodes: 19 | Win count: 169 | Win rate: 1.000 | time: 15.03 minutes
+Epoch: 275/999 | Loss: 0.0197 | Episodes: 16 | Win count: 170 | Win rate: 1.000 | time: 15.07 minutes
+Epoch: 276/999 | Loss: 0.0042 | Episodes: 4 | Win count: 171 | Win rate: 1.000 | time: 15.08 minutes
+Epoch: 277/999 | Loss: 0.1298 | Episodes: 85 | Win count: 172 | Win rate: 1.000 | time: 15.20 minutes
+Epoch: 278/999 | Loss: 0.0161 | Episodes: 11 | Win count: 173 | Win rate: 1.000 | time: 15.22 minutes
+Epoch: 279/999 | Loss: 0.0381 | Episodes: 26 | Win count: 174 | Win rate: 1.000 | time: 15.27 minutes
+Epoch: 280/999 | Loss: 0.0210 | Episodes: 14 | Win count: 175 | Win rate: 1.000 | time: 15.30 minutes
+Epoch: 281/999 | Loss: 0.0053 | Episodes: 4 | Win count: 176 | Win rate: 1.000 | time: 15.34 minutes
+Epoch: 282/999 | Loss: 0.0271 | Episodes: 19 | Win count: 177 | Win rate: 1.000 | time: 15.38 minutes
+Epoch: 283/999 | Loss: 0.0321 | Episodes: 25 | Win count: 178 | Win rate: 1.000 | time: 15.46 minutes
+Epoch: 284/999 | Loss: 0.0106 | Episodes: 8 | Win count: 179 | Win rate: 1.000 | time: 15.48 minutes
+Epoch: 285/999 | Loss: 0.0488 | Episodes: 40 | Win count: 180 | Win rate: 1.000 | time: 15.54 minutes
+Epoch: 286/999 | Loss: 0.0296 | Episodes: 21 | Win count: 181 | Win rate: 1.000 | time: 15.62 minutes
+Epoch: 287/999 | Loss: 0.0274 | Episodes: 20 | Win count: 182 | Win rate: 1.000 | time: 15.66 minutes
+Epoch: 288/999 | Loss: 0.0159 | Episodes: 15 | Win count: 183 | Win rate: 1.000 | time: 15.69 minutes
+Epoch: 289/999 | Loss: 0.0015 | Episodes: 1 | Win count: 184 | Win rate: 1.000 | time: 15.76 minutes
+Epoch: 290/999 | Loss: 0.0229 | Episodes: 23 | Win count: 185 | Win rate: 1.000 | time: 15.86 minutes
+Epoch: 291/999 | Loss: 0.0284 | Episodes: 27 | Win count: 186 | Win rate: 1.000 | time: 15.90 minutes
+Epoch: 292/999 | Loss: 0.0461 | Episodes: 45 | Win count: 187 | Win rate: 1.000 | time: 16.03 minutes
+Epoch: 293/999 | Loss: 0.0046 | Episodes: 4 | Win count: 188 | Win rate: 1.000 | time: 16.04 minutes
+Epoch: 294/999 | Loss: 0.0189 | Episodes: 21 | Win count: 189 | Win rate: 1.000 | time: 16.14 minutes
+Epoch: 295/999 | Loss: 0.0268 | Episodes: 23 | Win count: 190 | Win rate: 1.000 | time: 16.23 minutes
+Epoch: 296/999 | Loss: 0.0273 | Episodes: 26 | Win count: 191 | Win rate: 1.000 | time: 16.31 minutes
+Epoch: 297/999 | Loss: 0.0074 | Episodes: 10 | Win count: 192 | Win rate: 1.000 | time: 16.39 minutes
+Epoch: 298/999 | Loss: 0.0206 | Episodes: 24 | Win count: 193 | Win rate: 1.000 | time: 16.49 minutes
+Epoch: 299/999 | Loss: 0.0238 | Episodes: 26 | Win count: 194 | Win rate: 1.000 | time: 16.59 minutes
+Reached 100% win rate at epoch 299
+Training complete in: 16.66 minutes
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-warning" style="color:black;">
+<b>Note: </b> This cell will check to see if the model passes the completion check. Note: This could take several minutes.
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[15]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">completion_check</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">qmaze</span><span class="p">)</span>
+<span class="n">show</span><span class="p">(</span><span class="n">qmaze</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+Cell <span class="ansi-green-fg">In[15], line 1</span>
+<span class="ansi-green-fg">----&gt; 1</span> completion_check(<span class="ansi-yellow-bg">model</span>, qmaze)
+<span class="ansi-green-intense-fg ansi-bold">      2</span> show(qmaze)
+
+<span class="ansi-red-fg">NameError</span>: name &#39;model&#39; is not defined</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>This cell will test your model for one game. It will start the pirate at the top-left corner and run <b>play_game()</b>. The agent should find a path from the starting position to the target (treasure). The treasure is located in the bottom-right corner.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[16]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">pirate_start</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">play_game</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">qmaze</span><span class="p">,</span> <span class="n">pirate_start</span><span class="p">)</span>
+<span class="n">show</span><span class="p">(</span><span class="n">qmaze</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[16]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>&lt;matplotlib.image.AxesImage at 0x793e32398590&gt;</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img alt="No description has been provided for this image" src="javascript://"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Save and Submit Your Work<a rel="noopener" class="anchor-link" href="#Save-and-Submit-Your-Work">&#182;</a></h2><div class="alert alert-block alert-info" style="color:black;">
+<b>Hint:</b> To use the markdown block below, double click in the <b>Type Markdown and LaTeX:  &#120572;2</b> block below, to turn it back to html, Run the cell.
+</div>
+<p>After you have finished creating the code for your notebook, save your work.
+Make sure that your notebook contains your name in the filename (e.g. Doe_Jane_ProjectTwo.html). Download this file as an .html file clicking on <em><strong>file</strong></em> in <em>Jupyter Notebook</em>, navigating down to <em><strong>Download as</strong></em> and clicking on <em><strong>.html</strong></em>.
+Download a copy of your .html file and submit it to Brightspace.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[&#160;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+
+
+<script type="module" src="https://s.brightspace.com/lib/bsi/2026.7.210/unbundled/mathjax.js"></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() {
+					if (document.querySelector('math, .d2l-element, .d2l-cplus-layout') || /\$\$|\\\(|\\\[|\\begin{|\\ref{|\\eqref{/.test(document.body.innerHTML)) {
+						document.querySelectorAll('mspace[linebreak="newline"]').forEach(elm => {
+							elm.setAttribute('style', 'display: block; height: 0.5rem;');
+						});
+
+						document.querySelectorAll('math mmultiscripts > none').forEach(elm => {
+							const mrow = document.createElementNS('http://www.w3.org/1998/Math/MathML', 'mrow');
+							elm.replaceWith(mrow);
+						});
+
+						window.D2L.MathJax.loadMathJax({
+							outputScale: 1.5,
+							renderLatex: false,
+							enableMML3Support: false
+						});
+					}
+				});</script><script type="module" src="https://s.brightspace.com/lib/bsi/2026.7.210/unbundled/prism.js"></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() {
+					document.querySelectorAll('.d2l-code').forEach(code => {
+						window.D2L.Prism.formatCodeElement(code);
+					});
+				});</script><script type="module" src="https://s.brightspace.com/lib/bsi/2026.7.210/unbundled/embeds.js"></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() {
+					window.D2L.EmbedRenderer.renderEmbeds(document.body);
+				});</script></body></html>
