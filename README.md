@@ -56,9 +56,9 @@ and safe to rely on. In this project that meant not declaring success until the 
 was verified to solve the maze from every starting cell, so the result is genuinely
 general rather than overfit to a few cases. To the organization, I am responsible for
 writing clear, maintainable, well-documented code and being honest about a model's
-limits. As these techniques move into higher-stakes domains, that same discipline —
+limits. As these techniques move into higher-stakes domains, that same discipline
 validating thoroughly, avoiding overstated claims, and protecting the people affected
-by the system's decisions — is what keeps the technology trustworthy.
+by the system's decisions is what keeps the technology trustworthy.
 
 ## How to Run
 Open `Jeremy_White_ProjectTwo.ipynb` in Jupyter, run the cells in order to build the
